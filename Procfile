@@ -1,1 +1,1 @@
-web: gunicorn ttt:app --log-file -
+web: python app.py
