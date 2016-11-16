@@ -48,9 +48,9 @@ def main():
     if 'start' in text:
         text = text.split(' ')
         opponent = ''
-        print text
-        if text[2] in users:
-            opponent = text[2]
+        print text, users
+        if text[1] in users:
+            opponent = text[1]
         else:
             resp["text"] = 'Sorry couldn\'t find that user'
             return jsonify(resp)
