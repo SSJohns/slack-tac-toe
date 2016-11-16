@@ -40,9 +40,7 @@ def main():
         return jsonify(resp)
 
     # get the rest of our message
-    print token
     text = request.form.get('text')
-    print text
     text = text.split(' ')
     command = text[0]
     channel = str(request.form.get('channel_id'))
@@ -50,15 +48,17 @@ def main():
         'id':str(request.form.get('user_id')),
         'name':str(request.form.get('user_name'))
         }
-    # print user
+    print user
     curr_channel = channels_obj.add_channel(channel, users)
 
     if 'start' == command:
+        print command
         opponent = dict()
         if len(text) < 2:
             resp["text"] = 'Arguments for start are `/ttt start [user]`'
             return jsonify(resp)
         opponent['name'] = re.sub('@', '', text[1])
+        print opponent['name']
         resp['text'] = curr_channel.new_game(user, opponent, users)
         return jsonify(resp)
 

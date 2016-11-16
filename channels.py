@@ -19,6 +19,7 @@ class Channel:
         self.members = users
 
     def new_game(self, challenger, opponent, users):
+        print challenger, opponent, users
         if self.active['status'] == 'Playing' or self.active['status'] == 'Pending':
             return ('200','There\'s already existing a game, you have to finish it before starting a new')
         for usr in users:
