@@ -41,11 +41,11 @@ class Channel:
             self.active['winner'] = 'Game Ended winner is %s'.format(self.game.winner)
         return self.active
 
-def new_channel(chan_id):
+def new_channel(chan_id, users):
     """Logging a new channel"""
-    channel_list[chan_id] = Channel(chan_id)
+    channel_list[chan_id] = Channel(chan_id, users)
 
-def add_channel(chan_id):
+def add_channel(chan_id, users):
     if chan_id not in channel_list:
-        new_channel(chan_id)
+        new_channel(chan_id, users)
     return channel_list[chan_id]
