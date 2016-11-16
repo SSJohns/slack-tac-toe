@@ -40,7 +40,9 @@ def main():
         return jsonify(resp)
 
     # get the rest of our message
+    print token
     text = request.form.get('text')
+    print text
     text = text.split(' ')
     command = text[0]
     channel = str(request.form.get('channel_id'))
