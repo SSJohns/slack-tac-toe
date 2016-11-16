@@ -39,7 +39,7 @@ class Channel:
             }
         )
         # import ipdb; ipdb.set_trace()
-        return('200','"Created a new game state, it is {!s}\'s turn. To make move `/ttt move [1-9]`."'.format(self.turn['name']))
+        return "Created a new game state, it is {!s}\'s turn. To make move `/ttt move [1-9]`.".format(self.turn['name'])
 
     def move_piece(self, player, spot):
         print player, self.active, self.turn
