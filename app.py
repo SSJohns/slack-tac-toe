@@ -44,29 +44,45 @@ def main():
     text = text.split(' ')
     command = text[0]
     channel = str(request.form.get('channel_id'))
-    user = str(request.form.get('user_id'))
-    print user
+    user = {
+        'id':str(request.form.get('user_id')),
+        'name':str(request.form.get('user_name'))
+        }
+    # print user
     curr_channel = channels_obj.add_channel(channel, users)
 
     if 'start' == command:
+        opponent = dict()
         if len(text) < 2:
             resp["text"] = 'Arguments for start are `/ttt start [user]`'
             return jsonify(resp)
-        resp["text"] = 'Sorry couldn\'t find that user'
-        opponent = re.sub('@', '', text[1])
-        for user in users:
-            if opponent == user['name']:
-                resp['response_type'], resp['text'] = curr_channel.new_game(user, opponent)
+        opponent['name'] = re.sub('@', '', text[1])
+        resp['text'] = curr_channel.new_game(user, opponent, users)
         return jsonify(resp)
 
+    if 'current' == command:
+        board, stats = curr_channel.game_status()
+        resp['text'] = board + '\n' + stats['status'] + '\n' + stats['state']
+        return jsonify(resp)
 
-    # if text == 'accept':
-    #
-    #
-    # if text == 'current':
-    #
-    # if text == 'help':
-    #
+    if 'move' == command:
+        if len(text) < 2:
+            resp["text"] = 'Arguments for move are `/ttt move [1-9]`, not enough arguments'
+            return jsonify(resp)
+        # try:
+        digit = int(text[1])
+        print "Dig",digit
+        if digit <= 9 and digit >= 1:
+            print digit, 'in range'
+            resp["text"] = curr_channel.move_piece(user, digit-1)
+            print resp["text"]
+            return jsonify(resp)
+        else:
+            raise ValueError('Outside range')
+        # except:
+        #     resp["text"] = 'Arguments for move are `/ttt move [1-9]`'
+        #     return jsonify(resp)
+
     if 'end' == command:
         resp = curr_channel.end_game(user)
 
@@ -75,5 +91,5 @@ def main():
 
 
 if __name__ == '__main__':
-    app.debug = True
+    # app.debug = True
     app.run()

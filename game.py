@@ -27,22 +27,26 @@ class Game:
         self.moves = 0
         self.winner = ''
 
-    def init_game(players):
+    def init_game(self, players):
         self.challenger = players['challenger']
         self.opponent = players['opponent']
         self.turn = self.challenger
+        self.board = [cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol]
 
     def print_game(self):
-        return '|%s|%s|%s|\t\n|---+---+---|\n|%s|%s|%s|\t\n|---+---+---|\n|%s|%s|%s|'.format(self.board[0],self.board[1],self.board[2],self.board[3],self.board[4],self.board[5],self.board[6],self.board[7],self.board[8])
+        return '|{!s}|{!s}|{!s}|\t\n|---+---+---|\n|{!s}|{!s}|{!s}|\t\n|---+---+---|\n|{!s}|{!s}|{!s}|'.format(self.board[0],self.board[1],self.board[2],self.board[3],self.board[4],self.board[5],self.board[6],self.board[7],self.board[8])
 
     def winning_move(self):
         for move in self.combinations:
-            if (board[move[0]] == board[move[1]] == board[move[2]] == xSymbol):
+            print move
+            if (self.board[move[0]] == self.board[move[1]] == self.board[move[2]] == xSymbol):
                 self.winner = self.challenger
                 return True
-            if (board[move[0]] == board[move[1]] == board[move[2]] == oSymbol):
+            if (self.board[move[0]] == self.board[move[1]] == self.board[move[2]] == oSymbol):
                 self.winner = self.opponent
                 return True
+        if self.cat_game():
+            return True
         return False
 
     def is_empty(self, spot):
@@ -50,14 +54,15 @@ class Game:
 
     def move(self, player, spot):
         if not self.is_empty(spot):
-            raise ValueError('This spot taken')
-        if player == self.challenger:
+            return False
+        if player['id'] == self.challenger['id']:
             self.board[spot] = self.challenger_sym
             self.moves += 1
-
-        elif player == self.opponent:
+            return True
+        elif player['id'] == self.opponent['id']:
             self.board[spot] = self.opponent_sym
             self.moves += 1
+            return True
 
     def cat_game(self):
         if self.moves >= 9:
