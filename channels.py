@@ -3,7 +3,7 @@ channel_list = {}
 
 
 class Channel:
-    def __init__(self, channel_id):
+    def __init__(self, channel_id, users):
         self.channel = channel_id
         self.challenger = ''
         self.opponent = ''
@@ -20,7 +20,7 @@ class Channel:
                       ['-','-','-']
                      ]
         self.game = Game()
-        self.members = self.member_list()
+        self.members = users
 
     def new_game(self, challenger, opponent):
         if self.active['status'] == 'Playing' or self.active['status'] == 'Pending':
@@ -30,16 +30,6 @@ class Channel:
         self.active['status'] = 'Playing'
         self.turn = challenger
         return ('200','"Created a new game state, your turn as %s. To make move `/ttt move [1-9]`."'.format(challenger))
-
-    def member_list(self, resp):
-        """Generate a list of members in the channel"""
-        existing_users = []
-        for it in resp:
-            print it
-            for key, value in it.iteritems():
-                if key == "name":
-                    existing_users.append(str(value))
-        return existing_users
 
     def move_piece(self, player, spot):
         self.game.move(player, spot)

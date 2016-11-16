@@ -43,9 +43,7 @@ def main():
     channel = str(request.form.get('channel_id'))
     user = str(request.form.get('user_id'))
 
-
-    curr_channel = channels_obj.add_channel(channel)
-
+    curr_channel = channels_obj.add_channel(channel, users)
 
     if 'start' in text:
         text = text.split(' ')
