@@ -32,7 +32,7 @@ def main():
         "text": ""
     }
     # check auth
-    token = request.json.get('token')
+    token = request.form.get('token')
     if token != config.SECRET_KEY:
         resp['response_type'] = '401 Unauthorized'
         resp['text'] = 'Authorization token not recognized'
