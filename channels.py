@@ -12,8 +12,8 @@ class Channel:
         self.turn = ''
         self.win = None
         self.active = {
-            'status':'None',
-            'state':''
+            'status':'Done',
+            'state':'No Games in Progress'
         }
         self.game = Game()
         self.members = users
@@ -21,7 +21,7 @@ class Channel:
     def new_game(self, challenger, opponent, users):
         print challenger, opponent, users
         if self.active['status'] == 'Playing' or self.active['status'] == 'Pending':
-            return ('200','There\'s already existing a game, you have to finish it before starting a new')
+            return 'There\'s already existing a game, you have to finish it before starting a new'
         for usr in users:
             if opponent['name'] == usr['name']:
                 opponent['id'] = usr['id']

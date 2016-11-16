@@ -1,6 +1,6 @@
 oSymbol = ":o:"
 xSymbol = ":x:"
-cSymbol = ":-:"
+cSymbol = ":no_entry_sign:"
 
 class Game:
     def __init__(self):
