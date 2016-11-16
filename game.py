@@ -51,7 +51,7 @@ class Game:
     def move(self, player, spot):
         if not self.is_empty(spot):
             raise ValueError('This spot taken')
-        if player = self.challenger:
+        if player == self.challenger:
             self.board[spot] = self.challenger_sym
             self.moves += 1
 

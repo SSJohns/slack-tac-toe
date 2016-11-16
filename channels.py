@@ -22,12 +22,14 @@ class Channel:
         self.game = Game()
         self.members = self.member_list()
 
-    def new_game:
+    def new_game(self, challenger, opponent):
         if self.active['status'] == 'Playing' or self.active['status'] == 'Pending':
-            return 'Game in Progress'
+            return ('200','There\'s already existing a game, you have to finish it before starting a new')
         self.challenger = challenger
         self.opponent = opponent
-        self.active['status'] = 'Pending'
+        self.active['status'] = 'Playing'
+        self.turn = challenger
+        return ('200','"Created a new game state, your turn as %s. To make move `/ttt move [1-9]`."'.format(challenger))
 
     def member_list(self, resp):
         """Generate a list of members in the channel"""
@@ -47,7 +49,7 @@ class Channel:
             self.active['winner'] = 'Game Ended winner is %s'.format(self.game.winner)
         elif self.game.winning_move():
             self.active['winner'] = 'Game Ended winner is %s'.format(self.game.winner)
-        return self.active =
+        return self.active
 
 def new_channel(chan_id):
     """Logging a new channel"""
