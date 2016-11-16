@@ -12,7 +12,7 @@ class Channel:
         self.turn = ''
         self.win = None
         self.active = {
-            'status':'Done',
+            'status':'Nope',
             'state':'No Games in Progress'
         }
         self.game = Game()
@@ -21,7 +21,7 @@ class Channel:
     def new_game(self, challenger, opponent, users):
         print challenger, opponent, users
         if self.active['status'] == 'Playing' or self.active['status'] == 'Pending':
-            return 'There\'s already existing a game, you have to finish it before starting a new'
+            return self.game.print_game() + '\n' + 'There\'s already existing a game, you have to finish it before starting a new'
         for usr in users:
             if opponent['name'] == usr['name']:
                 opponent['id'] = usr['id']
@@ -39,7 +39,7 @@ class Channel:
             }
         )
         # import ipdb; ipdb.set_trace()
-        return "Created a new game state, it is {!s}\'s turn. To make move `/ttt move [1-9]`.".format(self.turn['name'])
+        return self.game.print_game() + '\n' + "Created a new game state, it is {!s}\'s turn. To make move `/ttt move [1-9]`.".format(self.turn['name'])
 
     def move_piece(self, player, spot):
         print player, self.active, self.turn
@@ -53,9 +53,9 @@ class Channel:
                     if self.game.winning_move():
                         self.active['status'] = 'Done'
                         self.active['state'] = 'Game Ended winner is {!s}'.format(self.game.winner['name'])
-                    return self.active['state']
+                    return self.game.print_game() + '\n' + self.active['state']
                 else:
-                    return 'Invalid move'
+                    return self.game.print_game() + '\n' + 'Invalid move'
             else:
                 if self.game.move(player, spot):
                     self.turn = self.challenger
@@ -63,11 +63,11 @@ class Channel:
                     if self.game.winning_move():
                         self.active['status'] = 'Done'
                         self.active['state'] = 'Game Ended winner is {!s}'.format(self.game.winner['name'])
-                    return self.active['state']
+                    return self.game.print_game() + '\n' + self.active['state']
                 else:
-                    return 'Invalid move'
+                    return self.game.print_game() + '\n' + 'Invalid move'
         else:
-            return 'It is not that users turn'
+            return self.game.print_game() + '\n' + 'It is not that users turn'
 
     def game_status(self):
         if self.active['status'] == 'Done':
@@ -87,16 +87,16 @@ class Channel:
             self.active['winner'] = self.opponent['name']
             board = self.game.print_board()
             self.game.reset_game()
-            return '{!s}\n{!s} forfeited the game, {!s} is the winner'.format(board, user['name'], self.opponent['name'])
+            return self.game.print_game() + '\n' + '{!s}\n{!s} forfeited the game, {!s} is the winner'.format(board, user['name'], self.opponent['name'])
         elif user['id'] == self.opponent['id']:
             self.winner = self.challenger
             self.active['status'] = 'Done'
             self.active['winner'] = self.challenger
             board = self.game.print_board()
             self.game.reset_game()
-            return '{!s}\n{!s} forfeited the game, {!s} is the winner'.format(board, user['name'], self.challenger['name'])
+            return self.game.print_game() + '\n' + '{!s}\n{!s} forfeited the game, {!s} is the winner'.format(board, user['name'], self.challenger['name'])
         else:
-            return 'User {!s} not authorized to end this game'.format(user)
+            return self.game.print_game() + '\n' + 'User {!s} not authorized to end this game'.format(user)
 
 def new_channel(chan_id, users):
     """Logging a new channel"""

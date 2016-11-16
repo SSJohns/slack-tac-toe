@@ -34,7 +34,7 @@ class Game:
         self.board = [cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol]
 
     def print_game(self):
-        return '| {!s} | {!s} | {!s} |\t\n|---+---+---|\n| {!s} | {!s} | {!s} |\t\n|---+---+---|\n| {!s} | {!s} | {!s} |'.format(self.board[0],self.board[1],self.board[2],self.board[3],self.board[4],self.board[5],self.board[6],self.board[7],self.board[8])
+        return '| {!s} | {!s} | {!s} |\t\n|-----+-----+-----|\n| {!s} | {!s} | {!s} |\t\n|-----+-----+-----|\n| {!s} | {!s} | {!s} |'.format(self.board[0],self.board[1],self.board[2],self.board[3],self.board[4],self.board[5],self.board[6],self.board[7],self.board[8])
 
     def winning_move(self):
         for move in self.combinations:
