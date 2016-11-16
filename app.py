@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from slacker import Slacker
 
 import channels as channels_obj
@@ -32,11 +32,11 @@ def main():
         "text": ""
     }
     # check auth
-    token = request.form.get('token')
+    token = request.json.get('token')
     if token != config.SECRET_KEY:
         resp['response_type'] = '401 Unauthorized'
         resp['text'] = 'Authorization token not recognized'
-        return resp
+        return jsonify(resp)
 
     # get the rest of our message
     text = request.form.get('text')
@@ -44,7 +44,7 @@ def main():
     user = str(request.form.get('user_id'))
 
 
-    curr_channel = channels_obj.add_channel(channel_id)
+    curr_channel = channels_obj.add_channel(channel)
 
 
     if 'start' in text:
@@ -54,8 +54,8 @@ def main():
         if text[2] in users:
             opponent = text[2]
         else:
-            resp["text"] = 'Sorry couldn\'t find that user.'
-            return resp
+            resp["text"] = 'Sorry couldn\'t find that user'
+            return jsonify(resp)
         resp['response_type'], resp['text'] = curr_channel.new_game(user, opponent)
 
     # if text == 'accept':
@@ -69,6 +69,7 @@ def main():
     #     res = end(channel)
 
     # if 'move' in text:
+    return jsonify(resp)
 
 
 if __name__ == '__main__':
