@@ -3,6 +3,7 @@ from slacker import Slacker
 
 import channels as channels_obj
 import config
+import re
 
 app = Flask(__name__)
 from werkzeug.serving import run_simple
@@ -40,21 +41,24 @@ def main():
 
     # get the rest of our message
     text = request.form.get('text')
+    text = text.split(' ')
+    command = text[0]
     channel = str(request.form.get('channel_id'))
     user = str(request.form.get('user_id'))
-
+    print user
     curr_channel = channels_obj.add_channel(channel, users)
 
-    if 'start' in text:
-        text = text.split(' ')
-        opponent = ''
-        print text, users
-        if text[1] in users:
-            opponent = text[1]
-        else:
-            resp["text"] = 'Sorry couldn\'t find that user'
+    if 'start' == command:
+        if len(text) < 2:
+            resp["text"] = 'Arguments for start are `/ttt start [user]`'
             return jsonify(resp)
-        resp['response_type'], resp['text'] = curr_channel.new_game(user, opponent)
+        resp["text"] = 'Sorry couldn\'t find that user'
+        opponent = re.sub('@', '', text[1])
+        for user in users:
+            if opponent == user['name']:
+                resp['response_type'], resp['text'] = curr_channel.new_game(user, opponent)
+        return jsonify(resp)
+
 
     # if text == 'accept':
     #
@@ -63,8 +67,8 @@ def main():
     #
     # if text == 'help':
     #
-    # if text == 'end':
-    #     res = end(channel)
+    if 'end' == command:
+        resp = curr_channel.end_game(user)
 
     # if 'move' in text:
     return jsonify(resp)
