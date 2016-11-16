@@ -34,7 +34,7 @@ def main():
     }
     # check auth
     token = request.form.get('token')
-    if token != config.SECRET_KEY:
+    if token != config.SECRET_KEY and token != config.LUG_SECRET_KEY:
         resp['response_type'] = '401 Unauthorized'
         resp['text'] = 'Authorization token not recognized'
         return jsonify(resp)
