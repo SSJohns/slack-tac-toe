@@ -53,7 +53,7 @@ class Channel:
 
 def new_channel(chan_id):
     """Logging a new channel"""
-    channel_list[chan_id].append(Channel(chan_id))
+    channel_list[chan_id] = Channel(chan_id)
 
 def add_channel(chan_id):
     if chan_id not in channel_list:
