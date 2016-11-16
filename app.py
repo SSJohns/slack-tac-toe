@@ -1,7 +1,7 @@
 from flask import Flask, request
 from slacker import Slacker
 
-import channels
+import channels as channels_obj
 import config
 
 app = Flask(__name__)
@@ -44,7 +44,7 @@ def main():
     user = str(request.form.get('user_id'))
 
 
-    curr_channel = channel.add_channel(channel_id)
+    curr_channel = channels_obj.add_channel(channel_id)
 
 
     if 'start' in text:
