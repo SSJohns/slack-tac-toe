@@ -46,6 +46,7 @@ class Channel:
             return self.active['state']
 
         # if it's this players turn move their pieces
+        print player, self.turn, spot, type(spot)
         if player['id'] == self.turn['id']:
             if player['id'] == self.challenger['id']:
                 if self.game.move(player, spot):
