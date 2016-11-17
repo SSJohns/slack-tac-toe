@@ -88,7 +88,7 @@ def main():
     if 'end' == command:
         '''Force quit current game
         '''
-        resp = curr_channel.end_game(user)
+        resp["text"] = curr_channel.end_game(user)
 
     return jsonify(resp)
 
