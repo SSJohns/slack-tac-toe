@@ -67,14 +67,14 @@ def main():
         resp['text'] = curr_channel.new_game(user, opponent, users)
         return jsonify(resp)
 
-    if 'current' == command:
+    elif 'current' == command:
         '''Print out the board and who moves next in the game
         '''
         board, stats = curr_channel.game_status()
         resp['text'] = board + '\n' + stats['status'] + '\n' + stats['state']
         return jsonify(resp)
 
-    if 'move' == command:
+    elif 'move' == command:
         '''Confirm digit is in range and free to move to
         '''
         if len(text) < 2:
@@ -86,7 +86,7 @@ def main():
         else:
             resp["text"] = 'Digit not in acceptable range.'
 
-    if 'end' == command:
+    elif 'end' == command:
         '''Force quit current game
         '''
         resp["text"] = curr_channel.end_game(user)
