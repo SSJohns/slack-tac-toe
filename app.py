@@ -1,14 +1,16 @@
 from flask import Flask, request, jsonify
 from slacker import Slacker
 
-import channels as channels_obj
+import src.channels as channels_obj
 import config
 import re
+import dill
 
 app = Flask(__name__)
-from werkzeug.serving import run_simple
+# from werkzeug.serving import run_simple
 slacker = Slacker(config.SLACK_API_KEY)
-
+channel_list = {}
+dill.dump(channel_list, open("myfile", "w"))
 
 # Get users list
 response = slacker.users.list()
@@ -28,13 +30,14 @@ def main():
         text=94070
         response_url=https://hooks.slack.com/commands/1234/5678
     """
+
     resp = {
         "response_type": "in_channel",
         "text": ""
     }
     # check auth
     token = request.form.get('token')
-    if token != config.SECRET_KEY and token != config.LUG_SECRET_KEY:
+    if token != config.SECRET_KEY:
         resp['response_type'] = 'ephemeral'
         resp['text'] = 'Authorization token not recognized'
         return jsonify(resp)
@@ -53,7 +56,9 @@ def main():
         'id': str(request.form.get('user_id')),
         'name': str(request.form.get('user_name'))
         }
-    curr_channel = channels_obj.add_channel(channel, users)
+    channel_list = dill.load(open("myfile"))
+    print "Dill", channel_list
+    curr_channel = add_channel(channel, users, channel_list)
 
     if 'start' == command:
         '''Have a user challenge another to user
@@ -82,8 +87,9 @@ def main():
             return jsonify(resp)
         digit = int(text[1])
         if digit <= 9 and digit >= 1:
-            resp["text"] = curr_channel.move_piece(user, digit-1)
+            resp["response_type"], resp["text"] = curr_channel.move_piece(user, digit-1)
         else:
+            resp["response_type"] = 'ephemeral'
             resp["text"] = 'Digit not in acceptable range.'
 
     elif 'end' == command:
@@ -91,9 +97,18 @@ def main():
         '''
         resp["text"] = curr_channel.end_game(user)
 
+    elif 'help' == command:
+        resp["response_type"] = 'ephemeral'
+        resp["text"] = '''Play a game of tictactoe against your friends\n
+        `/ttt start [user]` - Begin a game againt a specific user\n
+        `/ttt move [1-9]'*** - Move the users piece and returns the new board\n
+        `/ttt instructions'*** - Returns the instructions for the game\n
+        `/ttt help'*** - Returns all of the possible moves for the slash command\n
+        `/ttt end'*** - Allows one of the two users to forfeit and stop the game\n'''
+    dill.dump(channel_list, open("myfile", "w"))
     return jsonify(resp)
 
 
+
 if __name__ == '__main__':
-    # app.debug = True
-    app.run()
+    run_simple('0.0.0.0', 5000, app, use_reloader=True)
