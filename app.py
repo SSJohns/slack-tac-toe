@@ -29,13 +29,13 @@ def main():
         response_url=https://hooks.slack.com/commands/1234/5678
     """
     resp = {
-        "response_type": "200",
+        "response_type": "in_channel",
         "text": ""
     }
     # check auth
     token = request.form.get('token')
     if token != config.SECRET_KEY and token != config.LUG_SECRET_KEY:
-        resp['response_type'] = '401 Unauthorized'
+        resp['response_type'] = 'ephemeral'
         resp['text'] = 'Authorization token not recognized'
         return jsonify(resp)
 
@@ -44,7 +44,7 @@ def main():
     text = request.form.get('text')
     text = text.split(' ')
     if len(text) == 0:
-        resp["response_type"] = '400 Bad Request'
+        resp["response_type"] = 'ephemeral'
         resp["text"] = 'Not a valid command'
         jsonify(resp)
     command = text[0]
@@ -60,6 +60,7 @@ def main():
         '''
         opponent = dict()
         if len(text) < 2:
+            resp["response_type"] = 'ephemeral'
             resp["text"] = 'Arguments for start are `/ttt start [user]`'
             return jsonify(resp)
         opponent['name'] = re.sub('@', '', text[1])
