@@ -7,7 +7,7 @@ import re
 import dill
 
 app = Flask(__name__)
-# from werkzeug.serving import run_simple
+from werkzeug.serving import run_simple
 slacker = Slacker(config.SLACK_API_KEY)
 channel_list = {}
 dill.dump(channel_list, open("myfile", "w"))
@@ -111,4 +111,4 @@ def main():
 
 
 if __name__ == '__main__':
-    run_simple('0.0.0.0', 5000, app, use_reloader=True)
+    app.run()
