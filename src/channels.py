@@ -43,7 +43,7 @@ class Channel:
         '''Run thorugh checks to see if we can move a piece, then update turns
         '''
         if self.active['status'] == 'Done':
-            return self.active['state']
+            return 'in_channel', self.active['state']
 
         # if it's this players turn move their pieces
         print player, self.turn, spot, type(spot)
@@ -55,9 +55,9 @@ class Channel:
                     if self.game.winning_move():
                         self.active['status'] = 'Done'
                         self.active['state'] = 'Game Ended winner is {!s}'.format(self.game.winner['name'])
-                    return self.game.print_game() + '\n' + self.active['state']
+                    return 'in_channel',self.game.print_game() + '\n' + self.active['state']
                 else:
-                    return self.game.print_game() + '\n' + 'Invalid move'
+                    return 'ephemeral',self.game.print_game() + '\n' + 'Invalid move'
             else:
                 if self.game.move(player, spot):
                     self.turn = self.challenger
@@ -65,11 +65,11 @@ class Channel:
                     if self.game.winning_move():
                         self.active['status'] = 'Done'
                         self.active['state'] = 'Game Ended winner is {!s}'.format(self.game.winner['name'])
-                    return self.game.print_game() + '\n' + self.active['state']
+                    return 'in_channel',self.game.print_game() + '\n' + self.active['state']
                 else:
-                    return self.game.print_game() + '\n' + 'Invalid move'
+                    return 'ephemeral',self.game.print_game() + '\n' + 'Invalid move'
         else:
-            return self.game.print_game() + '\n' + 'It is not that users turn'
+            return 'ephemeral',self.game.print_game() + '\n' + 'It is not that users turn'
 
     def game_status(self):
         '''Returns the board and active state of the game
