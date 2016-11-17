@@ -8,12 +8,12 @@ import re
 app = Flask(__name__)
 from werkzeug.serving import run_simple
 slacker = Slacker(config.SLACK_API_KEY)
-# game = game.Game()
 
 
 # Get users list
 response = slacker.users.list()
 users = response.body['members']
+
 
 @app.route('/', methods=['POST'])
 def main():
@@ -40,17 +40,24 @@ def main():
         return jsonify(resp)
 
     # get the rest of our message
+    # and the users who are issueing it
     text = request.form.get('text')
     text = text.split(' ')
+    if len(text) == 0:
+        resp["response_type"] = '400 Bad Request'
+        resp["text"] = 'Not a valid command'
+        jsonify(resp)
     command = text[0]
     channel = str(request.form.get('channel_id'))
     user = {
-        'id':str(request.form.get('user_id')),
-        'name':str(request.form.get('user_name'))
+        'id': str(request.form.get('user_id')),
+        'name': str(request.form.get('user_name'))
         }
     curr_channel = channels_obj.add_channel(channel, users)
 
     if 'start' == command:
+        '''Have a user challenge another to user
+        '''
         opponent = dict()
         if len(text) < 2:
             resp["text"] = 'Arguments for start are `/ttt start [user]`'
@@ -60,32 +67,29 @@ def main():
         return jsonify(resp)
 
     if 'current' == command:
+        '''Print out the board and who moves next in the game
+        '''
         board, stats = curr_channel.game_status()
         resp['text'] = board + '\n' + stats['status'] + '\n' + stats['state']
         return jsonify(resp)
 
     if 'move' == command:
+        '''Confirm digit is in range and free to move to
+        '''
         if len(text) < 2:
             resp["text"] = 'Arguments for move are `/ttt move [1-9]`, not enough arguments'
             return jsonify(resp)
-        # try:
         digit = int(text[1])
-        print "Dig",digit
         if digit <= 9 and digit >= 1:
-            print digit, 'in range'
             resp["text"] = curr_channel.move_piece(user, digit-1)
-            print resp["text"]
-            return jsonify(resp)
         else:
-            raise ValueError('Outside range')
-        # except:
-        #     resp["text"] = 'Arguments for move are `/ttt move [1-9]`'
-        #     return jsonify(resp)
+            resp["text"] = 'Digit not in acceptable range.'
 
     if 'end' == command:
+        '''Force quit current game
+        '''
         resp = curr_channel.end_game(user)
 
-    # if 'move' in text:
     return jsonify(resp)
 
 

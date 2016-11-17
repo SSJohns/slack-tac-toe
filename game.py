@@ -2,27 +2,28 @@ oSymbol = ":o:"
 xSymbol = ":x:"
 cSymbol = ":no_entry_sign:"
 
+
 class Game:
     def __init__(self):
-        self.board = [cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol]
+        self.board = [cSymbol, cSymbol, cSymbol, cSymbol, cSymbol, cSymbol, cSymbol, cSymbol, cSymbol]
         self.challenger = ''
         self.opponent = ''
         self.challenger_sym = xSymbol
         self.opponent_sym = oSymbol
         self.combinations = (
-    		# Horisontal lines
-    		[0, 1, 2],
-    		[3, 4, 5],
-    		[6, 7, 8],
+            # Horisontal lines
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
 
-    		# Vertical lines
-    		[0, 3, 6],
-    		[1, 4, 7],
-    		[2, 5, 8],
+            # Vertical lines
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
 
-    		# Diagonals
-    		[0, 4, 8],
-    		[2, 4, 6],
+            # Diagonals
+            [0, 4, 8],
+            [2, 4, 6],
         )
         self.moves = 0
         self.winner = ''
@@ -31,14 +32,13 @@ class Game:
         self.challenger = players['challenger']
         self.opponent = players['opponent']
         self.turn = self.challenger
-        self.board = [cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol]
+        self.board = [cSymbol, cSymbol, cSymbol, cSymbol, cSymbol, cSymbol, cSymbol, cSymbol, cSymbol]
 
     def print_game(self):
-        return '| {!s} | {!s} | {!s} |\t\n|-----+-----+-----|\n| {!s} | {!s} | {!s} |\t\n|-----+-----+-----|\n| {!s} | {!s} | {!s} |'.format(self.board[0],self.board[1],self.board[2],self.board[3],self.board[4],self.board[5],self.board[6],self.board[7],self.board[8])
+        return '| {!s} | {!s} | {!s} |\t\n|-----+-----+-----|\n| {!s} | {!s} | {!s} |\t\n|-----+-----+-----|\n| {!s} | {!s} | {!s} |'.format(self.board[0], self.board[1], self.board[2], self.board[3], self.board[4], self.board[5], self.board[6], self.board[7], self.board[8])
 
     def winning_move(self):
         for move in self.combinations:
-            print move
             if (self.board[move[0]] == self.board[move[1]] == self.board[move[2]] == xSymbol):
                 self.winner = self.challenger
                 return True
@@ -73,6 +73,7 @@ class Game:
 
     def reset_game(self):
         self.moves = 0
-        self.board = [cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol,cSymbol]
+        self.board = [cSymbol, cSymbol, cSymbol, cSymbol, cSymbol, cSymbol, cSymbol, cSymbol, cSymbol]
         self.challenger = ''
         self.opponent = ''
+        self.winner = ''
