@@ -58,7 +58,7 @@ def main():
         }
     channel_list = dill.load(open("myfile"))
     print "Dill", channel_list
-    curr_channel = add_channel(channel, users, channel_list)
+    curr_channel = channels_obj.add_channel(channel, users, channel_list)
 
     if 'start' == command:
         '''Have a user challenge another to user
