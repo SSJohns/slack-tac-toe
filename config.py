@@ -1,7 +1,26 @@
-# instance/config.py
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
 
-SECRET_KEY = 'GikBPJZ05PcUq1Gm1SWH9uMS'
-LUG_SECRET_KEY = 'nQVKP4mfRBnXXSN5BM7djVKn'
-SLACK_API_KEY = 'xoxp-103375761559-102776875557-105909675527-260f0912a51db745dffb8db83e357fdd' # 'xoxp-17641790740-19430084545-49485038647-579a3d471a'# 
-SQLALCHEMY_DATABASE_URI= \
-"postgresql://user:TWljaGHFgiBCYXJ0b3N6a2lld2ljeiEh@localhost/databasename"
+class Config(object):
+	SLACK_API_KEY = os.environ['SLACK_API_KEY']
+	SECRET_KEY = os.environ['SECRET_KEY']
+	LUG_SECRET_KEY = osenviron['LUG_SECRET_KEY']
+	SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+
+
+class ProductionConfig(Config):
+    DEBUG = False
+
+
+class StagingConfig(Config):
+    DEVELOPMENT = True
+    DEBUG = True
+
+
+class DevelopmentConfig(Config):
+    DEVELOPMENT = True
+    DEBUG = True
+
+
+class TestingConfig(Config):
+    TESTING = True

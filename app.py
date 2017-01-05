@@ -1,21 +1,31 @@
+import os
+import re
+
 from flask import Flask, request, jsonify
 from slacker import Slacker
+from flask.ext.sqlalchemy import SQLAlchemy
 
-import src.channels as channels_obj
-import config
-import re
-import dill
+from channel import Channel 
+from game import Game 
+from board import Board 
 
 app = Flask(__name__)
 from werkzeug.serving import run_simple
-slacker = Slacker(config.SLACK_API_KEY)
-channel_list = {}
-dill.dump(channel_list, open("myfile", "w"))
+slacker = Slacker(os.environ['SLACK_API_KEY'])
+db = SQLAlchemy(app)
+
+def channel_in_db():
+    return Channel.query.order_by(Channel.channel_name)
+
+def add_channel(chan, users, channel_list, team):
+    for chan_obj in channel_list:
+        if chan['id'] == chan_obj.channel_id:
+            return chan_obj
+    return Channel(chan, team)
 
 # Get users list
 response = slacker.users.list()
 users = response.body['members']
-
 
 @app.route('/', methods=['POST'])
 def main():
@@ -37,7 +47,7 @@ def main():
     }
     # check auth
     token = request.form.get('token')
-    if token != config.SECRET_KEY:
+    if token != os.environ['SECRET_KEY']:
         resp['response_type'] = 'ephemeral'
         resp['text'] = 'Authorization token not recognized'
         return jsonify(resp)
@@ -51,14 +61,21 @@ def main():
         resp["text"] = 'Not a valid command'
         jsonify(resp)
     command = text[0]
-    channel = str(request.form.get('channel_id'))
+    channel = {
+        'id':str(request.form.get('channel_id')),
+        'name': str(request.form.get('channel_name'))
+        }
     user = {
         'id': str(request.form.get('user_id')),
         'name': str(request.form.get('user_name'))
         }
-    channel_list = dill.load(open("myfile"))
-    print "Dill", channel_list
-    curr_channel = channels_obj.add_channel(channel, users)
+    team = {
+        'id': str(request.form.get('team_id')),
+        'domain': str(request.form.get('team_domain'))
+        }
+    channel_list = channels_in_db()
+
+    curr_channel = add_channel(channel, users, channel_list, team)
 
     if 'start' == command:
         '''Have a user challenge another to user
@@ -76,7 +93,7 @@ def main():
         '''Print out the board and who moves next in the game
         '''
         board, stats = curr_channel.game_status()
-        resp['text'] = board + '\n' + stats['status'] + '\n' + stats['state']
+        resp['text'] = board + '\n' + stats[0] + '\n' + stats[1]
         return jsonify(resp)
 
     elif 'move' == command:
@@ -105,7 +122,7 @@ def main():
         `/ttt instructions'*** - Returns the instructions for the game\n
         `/ttt help'*** - Returns all of the possible moves for the slash command\n
         `/ttt end'*** - Allows one of the two users to forfeit and stop the game\n'''
-    dill.dump(channel_list, open("myfile", "w"))
+
     return jsonify(resp)
 
 
